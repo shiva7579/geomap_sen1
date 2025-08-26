@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Maplibre</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.2.1/dist/maplibre-gl.css" >
+        <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.css" >
+        <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.5.0/mapbox-gl-draw.css" type='text/css'/> -->
+
+      <script type="module" crossorigin src="/assets/index-DL5l6R9D.js"></script>
+      <link rel="stylesheet" crossorigin href="/assets/index-KhLVIW9C.css">
+    </head>
+    <body>
+        <style>
+        html, body { margin: 0; padding: 0; height: 100%; }
+        body{display: flex;flex-direction: column;}
+        .map { width: 100%;flex:1;position:relative}
+        .layer_selection{display:none;width:100px;height:200px;position:absolute;z-index: 1000;top:50px;right:20px;color: white;;}
+        .button{position:absolute;z-index:900;bottom:20px;left:10px}
+        .status_back{position:absolute;z-index:999;width:100%;height:100%;background-color: rgba(255,255,255,0.5);display:none}
+        .status_index{position:absolute;z-index:1000;background-color:white;padding:10px;border-radius: 10px;top:50%;left:50%;}
+        .event_box{position:absolute;z-index:1000;background-color: white;padding:5px;bottom:0px;left:0px}
+        .noimage{position:absolute;z-index:1005;background-color:white;padding:10px;border-radius: 10px;top:50%;left:35%;display:none}
+        .backbutton{display:flex;align-items:center;justify-content: center;}
+        .top{display:flex;gap:50px}
+        .cordinates{display:inline-block;padding:5px}
+        .draw{display:inline-block;padding:5px}
+        .Area{display:flex;align-items: center;}
+        .date{display:inline-block;padding:5px}
+        .mspan{width:40px}
+        .submit{display: inline-block;padding:5px}
+        .subut:hover{background-color: Red;font-weight: bold;}
+        .subut:active{background-color: green;color:blue;font-weight: bold;}
+        /* .overlay{display:flex;width:100%;flex:1;background:rgba(255,255,255,0);justify-content:center;align-items:center;z-index:9999}
+        .statusbox{background:white;padding:10px;font-size:20px;border-radius: 10px;} */
+        </style>
+        <div class="top">
+        <div class="cordinates">
+            <span style="margin-right:10px ;">Search Location: </span>
+            <input id="lat" type="number" step="0.000001" placeholder="Laitude" min="-90" max="90">
+            <span style="margin-right:10px;">N</span>
+            <input id="lon" type="number" step="0.000001" placeholder="Longitude" min="-180" max="180">
+            <span style="margin-right:10px;">E</span>
+        </div>
+        <div class="draw">
+            <span style="margin-right:5px">Select Region:</span>
+            <button id="draww" onclick="draww()">Draw</button>
+        </div>
+        <div class="Area">
+            <span style="margin-right: 5px;">Area:</span>
+            <div id="disarea" style="padding: 5px; font-weight: bold;">0 Km2</div>
+        </div>
+        <div class="date">
+            <span style="margin-right:5px">Before</span>
+            <input id="before" type="date" pattern="\d{4}-\d{2}-\d{2}" style="margin-right:10px" title="Please select date immediately before incident">
+             <!-- <span style="margin-right:5px;">span</span> -->
+            <input id="bspan" class="mspan" type="number" min="0" max="30" placeholder="12" title="OPTIONAL: Number of days between 0 to 30 for better Image processing by median value. For pre incident number of days are SUBTRACTED.Final images are median images between these datese.The defualt is 12 days.">
+            <span style="margin-right:5px;margin-left:10px;">After</span>
+            <input id="after" type="date" style="margin-right:10px" title="Please select date immediately after incident">
+            <!-- <span style="margin-right:5px;">span</span> -->
+            <input id="aspan" class="mspan" type="number" min="0" max="30" placeholder="12" title="OPTIONAL: Number of days between 0 to 30 for better Image processing by median value. For post incident number of days are ADDED.Final images are median images between these datese.The defualt is 12 days.">
+        </div>
+        <div class="submit">
+            <button onclick="submit()" class="subut" >Submit</button>
+        </div></div>
+        <div class="map" id="map"></div>
+        <div class="button">
+        <button onclick="satellite()">Satellite</button>
+        <button onclick="topo()">Topo</button></div>
+        <div class="status_back" id="status">
+        <div class="status_index" id="status_index">
+            <span>Please wait</span>
+        </div>
+        <div class="noimage" id="noimage">
+            <div id="noimageex" style="padding: 3px"></div>
+            <div class="backbutton"><button onclick="back()" style="padding: 2px">Go Back</button></div>
+        </div>
+        <div class="event_box" id="event_box"></div>
+        </div>
+
+        <div id="layer_selection" class="layer_selection">
+            <label><input type="checkbox" onchange="nationalboundary(this)" checked> Nations</label><br>
+            <label><input type="checkbox" onchange="subnationalboundary(this)" checked>Subnational</label><br>
+            <label><input type="checkbox" onchange="transportation(this)" checked> Roads</label><br>
+            <label><input type="checkbox" onchange="waterway(this)" checked> Rivers</label>
+        </div>
+    </body>
+</html>
+
